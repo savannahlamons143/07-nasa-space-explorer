@@ -142,3 +142,45 @@ button:hover {
   font-size: 48px;
   margin-bottom: 20px;
 }
+#gallery .gallery-card {
+  min-width: 0;
+}
+
+#gallery .gallery-card img {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+#gallery .gallery-image-button {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+#apodDialog {
+  box-sizing: border-box;
+  width: min(90vw, 800px);
+  max-height: 85vh;
+  padding: 1.5rem;
+  border: 0;
+  border-radius: 12px;
+}
+
+#apodDialog::backdrop {
+  background: rgb(0 0 0 / 70%);
+}
+
+#apodImage {
+  display: block;
+  max-width: 100%;
+  max-height: 55vh;
+  margin-inline: auto;
+}
