@@ -15,7 +15,22 @@ function toApodDate(date) {
   return date.slice(2).replaceAll('-', '');
 }
 
-getImagesButton.addEventListener('click', async () => {
+const pagination = document.getElementById('galleryPagination');
+const previousPage = document.getElementById('previousPage');
+const nextPage = document.getElementById('nextPage');
+const pageLabel = document.getElementById('pageLabel');
+
+const daysPerPage = 24;
+const millisecondsPerDay = 24 * 60 * 60 * 1000;
+let selectedRange;
+
+function addDays(date, days) {
+  const timestamp = Date.parse(date) + days * millisecondsPerDay;
+  return new Date(timestamp).toISOString().slice(0, 10);
+}
+
+getImagesButton.addEventListener('click', () => {
+  pagination.hidden = true;
   const startDate = startInput.value;
   const endDate = endInput.value;
 
@@ -25,9 +40,28 @@ getImagesButton.addEventListener('click', async () => {
     return;
   }
 
+  selectedRange = { startDate, endDate };
+  loadPage(0);
+});
+
+async function loadPage(pageIndex) {
+  const { startDate, endDate } = selectedRange;
+  const totalDays =
+    (Date.parse(endDate) - Date.parse(startDate)) / millisecondsPerDay + 1;
+  const pageCount = Math.ceil(totalDays / daysPerPage);
+
+  const pageStart = addDays(startDate, pageIndex * daysPerPage);
+  const lastDayOfPage = addDays(pageStart, daysPerPage - 1);
+  const pageEnd = lastDayOfPage < endDate ? lastDayOfPage : endDate;
+
+  pagination.hidden = pageCount === 1;
+  pageLabel.textContent = `Page ${pageIndex + 1} of ${pageCount}`;
+  previousPage.disabled = true;
+  nextPage.disabled = true;
+
   const apiUrl = new URL('https://science.nasa.gov/wp-json/wp/v2/apod-basic');
-  apiUrl.searchParams.set('date_from', toApodDate(startDate));
-  apiUrl.searchParams.set('date_to', toApodDate(endDate));
+  apiUrl.searchParams.set('date_from', toApodDate(pageStart));
+  apiUrl.searchParams.set('date_to', toApodDate(pageEnd));
   apiUrl.searchParams.set('per_page', '25');
 
   gallery.textContent = 'Loading space photos…';
@@ -48,6 +82,8 @@ getImagesButton.addEventListener('click', async () => {
       gallery.textContent = 'No APOD entries found for these dates.';
       return;
     }
+
+    data.sort((first, second) => first.date.localeCompare(second.date));
 
     for (const entry of data) {
       const card = document.createElement('article');
@@ -98,6 +134,22 @@ getImagesButton.addEventListener('click', async () => {
           ? 'Watch on NASA’s site'
           : 'View on NASA’s site';
         card.append(link);
+
+        if (entry.media_type === 'video') {
+          link.classList.add('video-preview');
+
+          if (entry.hdurl) {
+            const preview = new Image();
+
+            preview.addEventListener('load', () => {
+              link.style.backgroundImage =
+                `linear-gradient(transparent, #07111dcc), url("${preview.src}")`;
+              link.classList.add('has-thumbnail');
+            }, { once: true });
+
+            preview.src = entry.hdurl;
+          }
+        }
       }
 
       card.append(title, date);
@@ -108,5 +160,9 @@ getImagesButton.addEventListener('click', async () => {
     gallery.textContent = 'Could not load space photos. Please try again.';
   } finally {
     getImagesButton.disabled = false;
+    previousPage.disabled = pageIndex === 0;
+    nextPage.disabled = pageIndex >= pageCount - 1;
+    previousPage.onclick = () => loadPage(pageIndex - 1);
+    nextPage.onclick = () => loadPage(pageIndex + 1);
   }
-});
+}

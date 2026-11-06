@@ -166,21 +166,210 @@ button:hover {
 }
 
 #apodDialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
   box-sizing: border-box;
-  width: min(90vw, 800px);
-  max-height: 85vh;
-  padding: 1.5rem;
-  border: 0;
-  border-radius: 12px;
+  width: min(900px, calc(100% - 2rem));
+  max-height: 88dvh;
+  overflow: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+  border: 1px solid #39577e;
+  border-top: 4px solid #69a9ff;
+  border-radius: 18px;
+  background: linear-gradient(160deg, #172b49, #0a1425 65%);
+  color: #f4f7fc;
+  box-shadow: 0 20px 70px rgb(0 0 0 / 50%);
+  color-scheme: dark;
 }
 
 #apodDialog::backdrop {
-  background: rgb(0 0 0 / 70%);
+  background: rgb(3 8 19 / 78%);
+}
+
+#apodDialog form {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+#apodDialog button {
+  padding: 0.5rem 0.9rem;
+  border: 1px solid #52729e;
+  border-radius: 999px;
+  background: #203b60;
+  color: #f4f7fc;
+  cursor: pointer;
+}
+
+#apodDialog button:hover {
+  background: #2d507e;
+}
+
+#apodDialog button:focus-visible {
+  outline: 2px solid #a8cfff;
+  outline-offset: 3px;
+}
+
+#apodTitle {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.4rem, 4vw, 2.25rem);
+  line-height: 1.2;
+}
+
+#apodDate {
+  margin: 0.45rem 0 1.25rem;
+  text-align: center;
+  color: #a8cfff;
 }
 
 #apodImage {
   display: block;
+  width: auto;
+  height: auto;
   max-width: 100%;
-  max-height: 55vh;
+  max-height: 46dvh;
   margin-inline: auto;
+  border-radius: 10px;
+}
+
+#apodExplanation {
+  max-width: 68ch;
+  margin: 1.25rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid #39577e;
+  color: #d9e4f5;
+  line-height: 1.65;
+  text-align: left;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #0a1425;
+  background-image:
+    linear-gradient(to bottom, transparent 15%, #0a1425 100%),
+    radial-gradient(circle at 22px 34px, #a8cfff66 1px, transparent 2px),
+    radial-gradient(circle at 78px 65px, #ffffff55 1px, transparent 2px),
+    radial-gradient(ellipse at top, #1b3458, #0a1425 75%);
+  background-size: 100% 320px, 113px 91px, 173px 137px, 100% 320px;
+  background-repeat: no-repeat, repeat-x, repeat-x, no-repeat;
+  color: #f4f7fc;
+}
+
+.site-header h1,
+#gallery .placeholder {
+  color: #f4f7fc;
+}
+
+#gallery .gallery-card {
+  color: #f4f7fc;
+}
+
+#gallery .gallery-card time {
+  color: #b8cbe4;
+}
+
+#gallery .gallery-card a {
+  color: #a8cfff;
+}
+
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 1.25rem;
+  max-width: 1080px;
+  margin-inline: auto;
+}
+
+#gallery > .placeholder {
+  grid-column: 1 / -1;
+}
+
+#gallery .gallery-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid #29415f;
+  border-radius: 14px;
+  background: #101f35;
+}
+
+#gallery .gallery-image-button,
+#gallery .gallery-card img {
+  width: 100%;
+  max-width: none;
+  border-radius: 13px 13px 0 0;
+}
+
+#gallery .gallery-card img,
+#gallery .gallery-card > a {
+  box-sizing: border-box;
+  aspect-ratio: 16 / 10;
+}
+
+#gallery .gallery-card img {
+  height: auto;
+  object-fit: cover;
+}
+
+#gallery .gallery-card > a {
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  border-radius: 13px 13px 0 0;
+  background: #1b3458;
+  text-align: center;
+}
+
+#gallery .gallery-card h2 {
+  margin: 0.85rem 1rem 0.4rem;
+  font-size: 1.15rem;
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+#gallery .gallery-card time {
+  display: block;
+  margin: auto 1rem 0;
+  padding: 0.25rem 0 1rem;
+}
+
+#gallery .gallery-card > .video-preview {
+  place-items: end center;
+  background-image:
+    radial-gradient(circle at 45% 38%, #8fd5ff, #2767a2 55%, #102645 74%);
+  background-size: 42% auto;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  color: #f4f7fc;
+}
+
+#gallery .gallery-card > .video-preview.has-thumbnail {
+  background-size: cover;
+  background-position: center;
+}
+
+#galleryPagination:not([hidden]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+#galleryPagination button {
+  padding: 0.55rem 1rem;
+  border: 1px solid #52729e;
+  border-radius: 999px;
+  background: #203b60;
+  color: #f4f7fc;
+  cursor: pointer;
+}
+
+#galleryPagination button:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
